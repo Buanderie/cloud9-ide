@@ -46,7 +46,7 @@ RUN npm install -g minimatch@3.0.2
 # ------------------------------------------------------------------------------
 # Tweak standlone.js conf
 # ------------------------------------------------------------------------------
-RUN sed -i -e 's_127.0.0.1_0.0.0.0_g' /cloud9/configs/standalone.js 
+RUN sed -i -e 's_127.0.0.1_0.0.0.0_g' /cloud9/configs/standalone.js
 RUN sed -i -e 's_127.0.0.1_0.0.0.0_g' /cloud9/configs/standalone.js
 # ------------------------------------------------------------------------------
 # Add volumes
@@ -71,6 +71,15 @@ RUN chown -R c9user:c9user /cloud9
 RUN chown -R c9user:c9user /c9files
 RUN chown -R c9user:c9user /workspace
 RUN npm i --production
+
+# ------------------------------------------------------------------------------
+# Additional parameters for "secure" logging
+# ------------------------------------------------------------------------------
+ARG user=c9
+ARG pass=rules
+ENV user $user
+ENV pass $pass
+
 # ------------------------------------------------------------------------------
 # Expose ports.
 # ------------------------------------------------------------------------------
@@ -80,7 +89,7 @@ EXPOSE 3000
 # Startup commands and entrypoint
 # ------------------------------------------------------------------------------
 ENTRYPOINT ["fixuid"]
-CMD ["/bin/sh", "-c", "/usr/bin/node /cloud9/server.js --listen 0.0.0.0 --port 80 -w /workspace"]
+CMD ["/bin/sh", "-c", "/usr/bin/node /cloud9/server.js -a $user:$pass --listen 0.0.0.0 --port 80 -w /workspace"]
 # ------------------------------------------------------------------------------
 # switch user
 # ------------------------------------------------------------------------------
